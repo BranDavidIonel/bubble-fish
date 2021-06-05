@@ -50,17 +50,26 @@ class Player{
         this.spriteW=498;
         this.spriteH=327;
     }
+    initPosition(){
+        this.angle=0;
+        this.frame=0;
+        this.frameX=0;
+        this.frameY=0;
+        console.log('sda');
+    }
     update(){
         const dx=this.x-mouse.x;
         const dy=this.y-mouse.y;
         let theta=Math.atan2(dy,dx);
         this.angle=theta;
-        if(mouse.x!=this.x){
+        if(Math.abs(mouse.x-this.x)>1){
             this.x-=dx/30;
         }
-        if(mouse.y!=this.y){
+        if(Math.abs(mouse.y-this.y)>1){
             this.y-=dy/30;
         }
+    }
+    animatePlayer(){
         if(gameFrame%5==0){
             this.frame++;
             if(this.frame>=12) this.frame=0;
@@ -74,7 +83,6 @@ class Player{
             else if(this.frameY<11) this.frameY=2;
             else this.frameY=0;
         }
-
     }
     draw(){
          if(mouse.click){
@@ -93,13 +101,28 @@ class Player{
          ctx.save();
          ctx.translate(this.x,this.y);
          ctx.rotate(this.angle);
-         if(this.x>=mouse.x){
+         if(this.x>mouse.x && Math.abs(this.x-mouse.x)>1){
          ctx.drawImage(playerLeft,this.frameX*this.spriteW,this.frameY*this.spriteH,
             this.spriteW,this.spriteH,0-60,0-45,this.spriteW/4,this.spriteH/4);
-         }else{
+            this.animatePlayer();
+         }else if(this.x>mouse.x && Math.abs(this.x-mouse.x)<=1){
+            //this.initPosition();
+            ctx.drawImage(playerLeft,this.frameX*this.spriteW,this.frameY*this.spriteH,
+                this.spriteW,this.spriteH,0-60,0-45,this.spriteW/4,this.spriteH/4);
+                
+         } 
+         
+         if(this.x<mouse.x && Math.abs(this.x-mouse.x)>1){
             ctx.drawImage(playerRight,this.frameX*this.spriteW,this.frameY*this.spriteH,
                 this.spriteW,this.spriteH,0-60,0-45,this.spriteW/4,this.spriteH/4);
+                this.animatePlayer();
+         }else if(this.x<mouse.x && Math.abs(this.x-mouse.x)<=1){
+            //this.initPosition();
+            ctx.drawImage(playerRight,this.frameX*this.spriteW,this.frameY*this.spriteH,
+                this.spriteW,this.spriteH,0-60,0-45,this.spriteW/4,this.spriteH/4);
+               
          }
+
          ctx.restore();
     }
 
@@ -192,7 +215,7 @@ class Enemy{
         this.x=canvas.width-200;
         this.y=Math.random()*(canvas.height-150)+90;
         this.radius=60;
-        this.speed=Math.random()*2+2;
+        this.speed=Math.random()*0.5+1;
         this.frame=0;
         this.frameX=0;
         this.frameY=0;
